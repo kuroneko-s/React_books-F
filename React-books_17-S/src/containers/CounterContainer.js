@@ -1,5 +1,6 @@
 import { connect } from "../../node_modules/react-redux/es/exports";
 import Counter from "../components/Counter";
+import { createDecrease, createIncrease } from "../modules/counter";
 
 const CounterContainer = ({ number, createIncrease, createDecrease }) => {
   return (
@@ -11,17 +12,12 @@ const CounterContainer = ({ number, createIncrease, createDecrease }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  number: state.counter.number,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  createIncrease: () => {
-    console.log("increase");
-  },
-  createDecrease: () => {
-    console.log("decrease");
-  },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CounterContainer);
+export default connect(
+  (state) => ({
+    number: state.counter.number,
+  }),
+  (dispatch) => ({
+    createIncrease: () => dispatch(createIncrease()),
+    createDecrease: () => dispatch(createDecrease()),
+  })
+)(CounterContainer);

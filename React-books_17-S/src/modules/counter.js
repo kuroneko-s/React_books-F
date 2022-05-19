@@ -32,14 +32,16 @@ const initState = {
 } */
 
 // libarary 사용 시
-const counter = handleActions({
-  [INCREASE]: (state, action) => ({
-    number: state.number + 1,
-  }),
-  [DECREASE]: (state, action) => ({
-    number: state.number - 1,
-  }),
-  initState,
-});
+const counter = handleActions(
+  {
+    [INCREASE]: (state, action) => ({
+      number: state.number + 1,
+    }),
+    [DECREASE]: (state, action) => ({
+      number: state.number - 1,
+    }),
+  },
+  initState
+);
 
 export default counter;

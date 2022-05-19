@@ -3,7 +3,7 @@ const TodoItem = ({ todo, onToggle, onRemove }) => {
     <div>
       <input
         type="checkbox"
-        onClick={onToggle}
+        onClick={() => onToggle(todo.id)}
         checked={todo.done}
         readOnly={true}
       />
@@ -34,8 +34,6 @@ const Todos = ({
   };
 
   const onChange = (e) => onChangeInput(e.target.value);
-
-  console.log(todos);
 
   return (
     <div>

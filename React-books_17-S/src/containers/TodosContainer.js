@@ -1,9 +1,10 @@
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import {
   useDispatch,
   useSelector,
 } from "../../node_modules/react-redux/es/exports";
 import Todos from "../components/Todos";
+import { useActions } from "../lib/useActions";
 import {
   createChangeInput,
   createInsert,
@@ -17,7 +18,7 @@ const TodosContainer = () => {
     todos: todos.todos,
   }));
 
-  const dispatch = useDispatch();
+  /* const dispatch = useDispatch();
   const onChangeInput = useCallback(
     (input) => dispatch(createChangeInput(input)),
     [dispatch]
@@ -27,7 +28,11 @@ const TodosContainer = () => {
     [dispatch]
   );
   const onToggle = useCallback((id) => dispatch(createToggle(id)), [dispatch]);
-  const onRemove = useCallback((id) => dispatch(createRemove(id)), [dispatch]);
+  const onRemove = useCallback((id) => dispatch(createRemove(id)), [dispatch]); */
+  const [onChangeInput, onInsert, onToggle, onRemove] = useActions(
+    [createChangeInput, createInsert, createToggle, createRemove],
+    []
+  );
 
   return (
     <Todos
@@ -56,4 +61,5 @@ const TodosContainer = () => {
 )(TodosContainer);
  */
 
-export default TodosContainer;
+// connect는 React.memo를 자동으로 적용해주는데 Hooks는 별도로 적용을 시켜주는 코드가 들어가있어야 한다.
+export default React.memo(TodosContainer);

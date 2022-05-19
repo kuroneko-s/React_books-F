@@ -1,3 +1,5 @@
+import { createAction, handleActions } from "redux-actions";
+
 // action type
 const CHANGE_INPUT = "todos/CHANGE_INPUT";
 const INSERT = "todos/INSERT";
@@ -5,8 +7,7 @@ const TOGGLE = "todos/TOGGLE";
 const REMOVE = "todos/REMOVE";
 
 // action create function
-export const createChangeInput = (input) => ({ type: CHANGE_INPUT, input });
-let id = 3;
+/* export const createChangeInput = (input) => ({ type: CHANGE_INPUT, input });
 export const createInsert = (text) => ({
   type: INSERT,
   todo: {
@@ -22,7 +23,18 @@ export const createToggle = (id) => ({
 export const createRemove = (id) => ({
   type: REMOVE,
   id,
-});
+}); */
+let id = 4;
+
+// 두번째 인자에서 굳이 명시를 안하면 인풋 받은 값을 {payload: input_value}로 저장함
+export const createChangeInput = createAction(CHANGE_INPUT, (input) => input);
+export const createInsert = createAction(INSERT, (text) => ({
+  id: id++,
+  text,
+  done: false,
+}));
+export const createToggle = createAction(TOGGLE, (id) => id);
+export const createRemove = createAction(REMOVE, (id) => id);
 
 const initState = {
   input: "",
@@ -46,7 +58,7 @@ const initState = {
 };
 
 // reducer
-function todos(state = initState, action) {
+/* function todos(state = initState, action) {
   switch (action.type) {
     case CHANGE_INPUT:
       return {
@@ -73,6 +85,29 @@ function todos(state = initState, action) {
     default:
       return state;
   }
-}
+} */
+const todos = handleActions(
+  {
+    [CHANGE_INPUT]: (state, action) => ({
+      ...state,
+      input: action.input,
+    }),
+    [INSERT]: (state, action) => ({
+      ...state,
+      todos: [...state.todos, action.todo],
+    }),
+    [TOGGLE]: (state, action) => ({
+      ...state,
+      todos: state.todos.map((todo) =>
+        todo.id === action.id ? { ...todo, done: !todo.done } : todo
+      ),
+    }),
+    [REMOVE]: (state, action) => ({
+      ...state,
+      todos: state.todos.filter((todo) => todo.id !== action.id),
+    }),
+  },
+  initState
+);
 
 export default todos;

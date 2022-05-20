@@ -12,8 +12,19 @@ const SampleContainer = ({
   getUsers,
 }) => {
   useEffect(() => {
-    getPost(1);
-    getUsers();
+    const fn = async () => {
+      try {
+        console.log(getPost);
+        await getPost(1);
+        await getUsers();
+      } catch (e) {
+        // 여기서 에러가 발생하면 Promise<Error> 타입으로 나오는 듯
+        // 그래서 바로 접근해서는 확인을 못함
+        console.error("에러 발생");
+        console.error(e);
+      }
+    };
+    fn();
   }, [getPost, getUsers]);
 
   return (

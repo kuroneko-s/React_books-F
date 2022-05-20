@@ -17,7 +17,7 @@ const reduxLogger = createLogger({
 // const store = createStore(rootReducer);
 const store = configureStore({
   reducer: rootReducer,
-  middleware: [reduxLogger, ReduxThunk],
+  middleware: [ReduxThunk],
 });
 
 ReactDOM.render(

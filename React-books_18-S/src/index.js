@@ -3,11 +3,15 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import App from "./App";
-import rootReducer from "./modules/index";
+import rootReducer, { rootSaga } from "./modules/index";
 import reportWebVitals from "./reportWebVitals";
 import loggerMiddleware from "./lib/loggerMiddleware";
 import { createLogger } from "redux-logger";
 import ReduxThunk from "redux-thunk";
+import createSagaMiddleware from "redux-saga";
+import { composeWithDevTools } from "../node_modules/redux-devtools-extension/index";
+
+const sagaMiddleware = createSagaMiddleware();
 
 const reduxLogger = createLogger({
   duration: true,
@@ -17,8 +21,11 @@ const reduxLogger = createLogger({
 // const store = createStore(rootReducer);
 const store = configureStore({
   reducer: rootReducer,
-  middleware: [ReduxThunk],
+  // devTools: true,
+  middleware: [ReduxThunk, sagaMiddleware],
 });
+
+sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(
   <React.StrictMode>

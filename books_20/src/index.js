@@ -1,14 +1,25 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
+import { configureStore } from "@reduxjs/toolkit";
 import App from "./App";
+import rootReducer from "./modules/index";
 import reportWebVitals from "./reportWebVitals";
+import thunk from "../node_modules/redux-thunk/es/index";
+import { Provider } from "../node_modules/react-redux/es/exports";
+
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: [thunk],
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -3,13 +3,14 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
 import App from "./App";
-import rootReducer from "./modules/index";
+import rootReducer from "./modules";
 import reportWebVitals from "./reportWebVitals";
-import thunk from "../node_modules/redux-thunk/es/index";
-import { Provider } from "../node_modules/react-redux/es/exports";
+import thunk from "redux-thunk";
+import { Provider } from "react-redux";
 
 const store = configureStore({
   reducer: rootReducer,
+  preloadedState: window.__PRELOADED_STATE__, // 이 값을 초기 상태로 사용
   middleware: [thunk],
 });
 

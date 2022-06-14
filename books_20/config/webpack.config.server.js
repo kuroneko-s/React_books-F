@@ -14,7 +14,6 @@ const ccsModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
-// const env = getClientenvironment(paths.publicUrlOrPath.slice(0, -1));
 const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1));
 
 module.exports = {
@@ -169,7 +168,7 @@ module.exports = {
   },
   externals: [
     nodeExternals({
-      allowlist: [/@babel/], // 환경변수
+      allowlist: [/@babel/], // 번들에 추가하는거네 ?? 
     }),
   ],
 };

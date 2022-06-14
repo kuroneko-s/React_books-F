@@ -47,6 +47,7 @@ function createPage(root, stateScript) {
 }
 
 const serverRender = async (req, res, next) => {
+  // 이 함수가 404가 안뜨고 서버 렌더링 하게끔  해준다고 함
   const context = {};
   const store = configureStore({
     reducer: rootReducer,
@@ -94,7 +95,7 @@ const serverRender = async (req, res, next) => {
 
 app.use(
   express.static(path.resolve("./build"), {
-    index: false,
+    index: false, // / 경로에서 index.html을 보여주지 않도록 설정
   })
 );
 app.use(serverRender);

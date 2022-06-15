@@ -1,5 +1,11 @@
 import { createContext, useContext } from "react";
 
+/*
+  {
+    promises : [],
+    done: boolean
+  }
+*/
 const PreloadContext = createContext(null);
 export default PreloadContext;
 

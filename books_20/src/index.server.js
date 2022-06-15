@@ -15,7 +15,7 @@ const app = express();
 const manifest = JSON.parse(
   fs.readFileSync(path.resolve("./build/asset-manifest.json"), "utf8")
 );
-
+// SSR 하면 build의 결과물에 chunk.js로 파편화 될거니깐 해당 포맷으로 끝나는 파일들을 가져옴
 const chunks = Object.keys(manifest.files)
   .filter((key) => /chunk\.js$/.exec(key)) // chunk.js로 끝나는 키를 찾아옴
   .map((key) => `<script src="${manifest.files[key]}"> </script>`)

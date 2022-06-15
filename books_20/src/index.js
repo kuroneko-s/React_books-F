@@ -7,12 +7,18 @@ import rootReducer from "./modules";
 import reportWebVitals from "./reportWebVitals";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
+import createSagaMiddleware from "redux-saga";
+import { rootSaga } from "./modules/index";
+
+const sagaMiddleware = createSagaMiddleware();
 
 const store = configureStore({
   reducer: rootReducer,
   preloadedState: window.__PRELOADED_STATE__, // 이 값을 초기 상태로 사용
-  middleware: [thunk],
+  middleware: [thunk, sagaMiddleware],
 });
+
+sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(
   <React.StrictMode>

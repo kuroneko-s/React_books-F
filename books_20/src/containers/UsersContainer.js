@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import Users from "../components/Users";
 import { Preloader } from "../lib/PreloadContext";
-import { getUsers } from "../modules/users";
+import { getUsers } from "../modules/users_saga";
 
 const UsersContainer = ({ users, getUsers }) => {
   // 이 코드는 Front에서 동작하는 코드, 서버에서는 동작 안함

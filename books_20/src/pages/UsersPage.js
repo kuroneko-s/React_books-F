@@ -8,7 +8,7 @@ const UsersPage = () => {
       <UsersContainer />
       <Route
         path={"/users/:id"}
-        render={({ match }) => <UserContainer id={match.id} />}
+        render={({ match }) => <UserContainer id={match.params.id} />}
       />
     </>
   );

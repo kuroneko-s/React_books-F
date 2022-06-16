@@ -5,10 +5,11 @@ import App from "./App";
 import path from "path";
 import fs from "fs";
 import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "./modules/index";
+import rootReducer, { rootSaga } from "./modules/index";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 import PreloadContext from "./lib/PreloadContext";
+import createSagaMiddleware, {END} from 'redux-saga';
 
 const app = express();
 
@@ -49,10 +50,15 @@ function createPage(root, stateScript) {
 const serverRender = async (req, res, next) => {
   // 이 함수가 404가 안뜨고 서버 렌더링 하게끔  해준다고 함
   const context = {};
+  const sagaMiddle = createSagaMiddleware();
   const store = configureStore({
     reducer: rootReducer,
-    middleware: [thunk],
+    middleware: [thunk, sagaMiddle],
   }); // Requst가 올때마다 store를 생성해준다.
+
+
+  // sagaMiddle.run(rootSaga) <- 이 작업을 Promise로 변환해줌. 별도의 작업이 없으면 해당 프로미스는 종료되지 않음
+  const sagaPromise = sagaMiddle.run(rootSaga).toPromise();
 
   const preloadContext = {
     done: false,
@@ -74,8 +80,10 @@ const serverRender = async (req, res, next) => {
   // 이 렌더링으로 나온 결과값은 클라쪽에서 HTML DOM 인터렉션을 지원하기 힘들다.
   // 얘를 사용한 이유는 Preloader로 넣어준 함수를 호출하기 위해서 그리고 조금 더 빨라서
   ReactDOMServer.renderToStaticMarkup(jsx); // 한번 렌더링 해주고
+  store.dispatch(END); // redux-saga의 END 액션을 발생시키면 액션을 모니터링하는 사가들이 모두 종료된다. 
 
   try {
+    await sagaPromise; // 기존에 진행 중이던 사가들이 끝날때까지 대기
     await Promise.all(preloadContext.promises); // 모든 Promise를 기다려 준다
   } catch (e) {
     return res.status(500);

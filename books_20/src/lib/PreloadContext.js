@@ -21,3 +21,10 @@ export const Preloader = ({ resolve }) => {
 
   return null;
 };
+
+export const usePreloader = resolve => {
+  const preloadContext = useContext(PreloadContext);
+  if (!preloadContext) return null; // 유효하지 않다면 아무것도 안함
+  if (preloadContext.done) return null; // 작업이 끝났으면 아무것도 안함
+  preloadContext.promises.push(Promise.resolve(resolve()))
+}

@@ -1,5 +1,6 @@
 const Koa = require("koa")
 const Router = require("koa-router")
+const bodyParser = require("koa-bodyparser")
 
 const api = require("./api")
 
@@ -8,6 +9,9 @@ const router = new Router();
 
 router.use('/api', api.routes())
 
+app.use(bodyParser())
+
+// 이 타이밍에서 라우터를 적용
 app.use(router.routes())
     .use(router.allowedMethods())
 

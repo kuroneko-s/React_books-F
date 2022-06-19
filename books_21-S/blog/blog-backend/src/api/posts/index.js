@@ -1,13 +1,27 @@
-const Router = require("koa-router")
-const {list, write, read, remove, replace, update} = require("./posts.ctrl")
+import Router from "koa-router"
+import * as Ctrl from "./posts.ctrl"
 
 const posts = new Router()
 
+const {
+    list,
+    write,
+    read,
+    remove,
+    replace,
+    update,
+    checkObjectId
+} = Ctrl
+
 posts.get('/', list)
 posts.post('/', write)
-posts.get('/:id', read)
-posts.delete('/:id', remove)
-posts.put('/:id', replace)
-posts.patch('/:id', update)
 
-module.exports = posts
+const post = new Router()
+post.get('/', read)
+post.delete('/', remove)
+post.patch('/', update)
+
+posts.use('/:id', checkObjectId, post.routes())
+// posts.put('/:id', replace)
+
+export default posts

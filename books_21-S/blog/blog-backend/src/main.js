@@ -4,6 +4,7 @@ import Router from "koa-router"
 import bodyParser from "koa-bodyparser"
 import mongoose from "mongoose"
 import api from "./api"
+import jwtMiddleware from "./lib/jwtMiddleware";
 
 const {PORT, MONGO_URL} = process.env
 
@@ -21,7 +22,7 @@ mongoose.connect(MONGO_URL, {
 router.use('/api', api.routes())
 
 app.use(bodyParser())
-
+app.use(jwtMiddleware)
 // 이 타이밍에서 라우터를 적용
 app.use(router.routes())
     .use(router.allowedMethods())

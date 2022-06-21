@@ -1,5 +1,6 @@
 import Router from "koa-router"
 import * as Ctrl from "./posts.ctrl"
+import checkLoggedIn from './../../lib/checkLoggedIn';
 
 const posts = new Router()
 
@@ -8,20 +9,20 @@ const {
     write,
     read,
     remove,
-    replace,
     update,
-    checkObjectId
+    getPostById,
+    checkOwnPost
 } = Ctrl
 
 posts.get('/', list)
-posts.post('/', write)
+posts.post('/', checkLoggedIn, write)
 
 const post = new Router()
 post.get('/', read)
-post.delete('/', remove)
-post.patch('/', update)
+post.delete('/', checkLoggedIn, checkOwnPost, remove)
+post.patch('/', checkLoggedIn, checkOwnPost, update)
 
-posts.use('/:id', checkObjectId, post.routes())
+posts.use('/:id', getPostById, post.routes())
 // posts.put('/:id', replace)
 
 export default posts

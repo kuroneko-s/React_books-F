@@ -1,0 +1,12 @@
+import client from './client';
+
+// LOGIN
+export const login = ({ username, password }) =>
+  client.post('/api/auth/login', { username, password });
+
+// LEGISTER
+export const register = ({ username, password }) =>
+  client.post('/api/auth/register', { username, password });
+
+// state check
+export const check = () => client.get('/api/auth/check');

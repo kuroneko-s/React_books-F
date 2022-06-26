@@ -1,8 +1,8 @@
-import { withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import palette from '../../lib/styles/palette';
 
-const StyledButton = styled.button`
+const buttonStyle = css`
   border: none;
   border-radius: 4px;
   font-size: 1rem;
@@ -36,18 +36,30 @@ const StyledButton = styled.button`
     `}
 `;
 
-function Button({ to, history, ...rest }) {
-  const onClick = (e) => {
-    if (to) {
-      history.push(to);
-    }
+const StyledButton = styled.button`
+  ${buttonStyle}
+`;
 
-    if (rest.onClick) {
-      rest.onClick(e);
-    }
-  };
+/**
+ * 이런식으로 styled로 감 감싸서 만든 컴포넌트의 경우에는
+ * 임의의 props가 필터링되지 않는다.
+ */
+const StyledLink = styled(Link)`
+  ${buttonStyle}
+`;
+// a 태그는 boolean 값이 임의 props로 설정되는 것을 허용하지 않는다.
 
-  return <StyledButton {...rest} onClick={onClick} />;
+/**
+ * button 스타일을 따로 만들어서 직접 button element에 넘겨주는게 아니라
+ * Link를 button 처럼 스타일링해서 직접 Link를 사용하는 방식
+ */
+
+function Button(props) {
+  return props.to ? (
+    <StyledLink {...props} cyan={props.cyan ? 1 : 0} />
+  ) : (
+    <StyledButton {...props} />
+  );
 }
 
-export default withRouter(Button);
+export default Button;

@@ -8,6 +8,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import rootReducer, { rootSaga } from './modules';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
+import { check, tempSetUser } from './modules/user';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -17,7 +18,21 @@ const store = configureStore({
   middleware: [sagaMiddleware],
 });
 
-sagaMiddleware.run(rootSaga);
+sagaMiddleware.run(rootSaga); // saga를 먼저 실행시켜줘야 함
+
+function loadUser() {
+  try {
+    const user = localStorage.getItem('user');
+    if (!user) return;
+
+    store.dispatch(tempSetUser(JSON.parse(user)));
+    store.dispatch(check());
+  } catch (e) {
+    console.log('localStorage is not working');
+  }
+}
+
+loadUser();
 
 ReactDOM.render(
   <React.StrictMode>

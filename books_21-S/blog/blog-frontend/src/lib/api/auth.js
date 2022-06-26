@@ -12,3 +12,6 @@ export const register = ({ username, password }) =>
 
 // state check
 export const check = () => client.get('/api/auth/check');
+
+// LOGOUT
+export const logout = () => client.post('/api/auth/logout');

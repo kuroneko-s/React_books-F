@@ -1,7 +1,17 @@
-import React from "react";
+import React from 'react';
+import Responsive from '../components/common/Responsive';
+import Editor from '../components/write/Editor';
+import TagBox from '../components/write/TagBox';
+import WriteActionButtons from '../components/write/WriteActionButtons';
 
-function WritePage(){
-    return <div>글쓰기</div>
+function WritePage() {
+  return (
+    <Responsive>
+      <Editor />
+      <TagBox />
+      <WriteActionButtons />
+    </Responsive>
+  );
 }
 
 export default WritePage;

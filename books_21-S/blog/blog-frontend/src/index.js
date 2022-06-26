@@ -5,18 +5,16 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from './modules';
+import rootReducer, { rootSaga } from './modules';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
-import { applyMiddleware } from 'redux';
-import { rootSaga } from './modules/index';
 
 const sagaMiddleware = createSagaMiddleware();
 
 const store = configureStore({
   reducer: rootReducer,
   devTools: true,
-  middleware: [applyMiddleware(sagaMiddleware)],
+  middleware: [sagaMiddleware],
 });
 
 sagaMiddleware.run(rootSaga);

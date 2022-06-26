@@ -1,14 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import AuthForm from '../../components/auth/AuthForm';
 import { changeField, initializeForm, register } from '../../modules/auth';
+import { check } from '../../modules/user';
 
-function RegisterForm() {
+function RegisterForm({ history }) {
+  const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  const { form, auth, authError } = useSelector((state) => ({
+  const { form, auth, authError, user } = useSelector((state) => ({
     form: state.auth.register,
     auth: state.auth.auth,
     authError: state.auth.authError,
+    user: state.user.user,
   }));
 
   const onChange = (e) => {
@@ -25,8 +29,17 @@ function RegisterForm() {
   const onSubmit = (e) => {
     e.preventDefault();
     const { username, password, passwordConfirm } = form;
+    if ([username, password, passwordConfirm].includes('')) {
+      setError('빈 칸을 모두 입력하세요.');
+      return;
+    }
+
     if (password !== passwordConfirm) {
-      // TODO: 오류 처리
+      setError('비밀번호가 일치하지 않습니다.');
+      dispatch(changeField({ form: 'register', key: 'password', value: '' }));
+      dispatch(
+        changeField({ form: 'register', key: 'passwordConfirm', value: '' }),
+      );
       return;
     }
     dispatch(register({ username, password }));
@@ -38,16 +51,26 @@ function RegisterForm() {
 
   useEffect(() => {
     if (authError) {
-      console.log('오류 발생');
-      console.log(authError);
+      if (authError.response.status === 409) {
+        setError('이미 존재하는 계정명입니다.');
+        return;
+      }
+      setError('회원가입 실패');
       return;
     }
 
     if (auth) {
       console.log('가입 성공');
       console.log(auth);
+      dispatch(check());
     }
-  }, [auth, authError]);
+  }, [auth, authError, dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      history.push('/');
+    }
+  }, [user, history]);
 
   return (
     <AuthForm
@@ -55,8 +78,9 @@ function RegisterForm() {
       form={form}
       onChange={onChange}
       onSubmit={onSubmit}
+      error={error}
     />
   );
 }
 
-export default RegisterForm;
+export default withRouter(RegisterForm); // history 사용하기 위함

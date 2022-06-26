@@ -12,11 +12,11 @@ export default function createRequestSaga(type, request) {
   const FAILURE = `${type}_FAILURE`;
 
   return function* (action) {
+    console.log('action - ', action);
     yield put(startLoading(type));
     try {
       const response = yield call(request, action.payload); // URL, Parameter
-      console.log('redux에서 auth로 왜 받을 수 있는지 확인중');
-      console.log('response - ', response);
+      console.log('response - ', response.data);
       yield put({
         // dispatch
         type: SUCCESS,

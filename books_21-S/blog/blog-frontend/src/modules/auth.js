@@ -39,6 +39,7 @@ export const login = createAction(LOGIN, ({ username, password }) => ({
 // SAGA 생성
 const registerSaga = createRequestSaga(REGISTER, authAPI.register);
 const loginSaga = createRequestSaga(LOGIN, authAPI.login);
+
 export function* authSaga() {
   yield takeLatest(REGISTER, registerSaga);
   yield takeLatest(LOGIN, loginSaga);
@@ -70,7 +71,6 @@ const auth = handleActions(
       [form]: initState[form],
     }),
     [REGISTER_SUCCESS]: (state, { payload: auth }) => ({
-      // 왜 auth로 받을까
       ...state,
       authError: null,
       auth,
@@ -80,7 +80,6 @@ const auth = handleActions(
       authError: error,
     }),
     [LOGIN_SUCCESS]: (state, { payload: auth }) => ({
-      // 왜 auth로 받을까
       ...state,
       authError: null,
       auth,

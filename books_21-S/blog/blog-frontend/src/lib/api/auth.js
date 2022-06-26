@@ -1,8 +1,10 @@
 import client from './client';
 
 // LOGIN
-export const login = ({ username, password }) =>
-  client.post('/api/auth/login', { username, password });
+export const login = ({ username, password }) => {
+  console.log(username, password);
+  return client.post('/api/auth/login', { username, password });
+};
 
 // LEGISTER
 export const register = ({ username, password }) =>

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import palette from '../../lib/styles/palette';
 
@@ -73,7 +73,7 @@ const TagList = React.memo(({ tags, onRemove }) => (
   </TagListBlock>
 ));
 
-const TagBox = () => {
+const TagBox = ({ onChangeTags, tags }) => {
   const [input, setInput] = useState('');
   const [localTags, setLocalTags] = useState([]);
 
@@ -81,16 +81,20 @@ const TagBox = () => {
     (tag) => {
       if (!tag) return;
       if (localTags.includes(tag)) return;
-      setLocalTags([...localTags, tag]);
+      const nextTags = [...localTags, tag];
+      setLocalTags(nextTags); // local state, 이 코드가 없어도 state 유지는 됨.
+      onChangeTags(nextTags); // store state
     },
-    [localTags],
+    [localTags, onChangeTags],
   );
 
   const onRemove = useCallback(
     (tag) => {
-      setLocalTags(localTags.filter((t) => t !== tag));
+      const nextTags = localTags.filter((t) => t !== tag);
+      setLocalTags(nextTags); // 이 코드가 없어도 state 유지는 됨.
+      onChangeTags(nextTags);
     },
-    [localTags],
+    [localTags, onChangeTags],
   );
 
   const onChange = useCallback((e) => {
@@ -105,6 +109,10 @@ const TagBox = () => {
     },
     [input, insertTag],
   );
+
+  useEffect(() => {
+    setLocalTags(tags);
+  }, [tags]);
 
   return (
     <TagBoxBlock>

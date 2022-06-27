@@ -12,11 +12,11 @@ export default function createRequestSaga(type, request) {
   const FAILURE = `${type}_FAILURE`;
 
   return function* (action) {
-    console.log('action - ', action);
+    console.log('saga action - ', action);
     yield put(startLoading(type));
     try {
       const response = yield call(request, action.payload); // URL, Parameter
-      console.log('response - ', response.data);
+      console.log('saga response - ', response.data);
       yield put({
         // dispatch
         type: SUCCESS,

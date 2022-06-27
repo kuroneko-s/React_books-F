@@ -1,9 +1,12 @@
 import styled from 'styled-components';
 import palette from '../../lib/styles/palette';
 import Button from '../common/Button';
+import Responsive from '../common/Responsive';
+import SubInfo from '../common/SubInfo';
+import Tags from '../common/Tags';
 
-const PostListBlock = styled.div`
-  display: flex;
+const PostListBlock = styled(Responsive)`
+  margin-top: 3rem;
 `;
 
 const WritePostButtonWrapper = styled.div`
@@ -12,9 +15,10 @@ const WritePostButtonWrapper = styled.div`
   margin-bottom: 3rem;
 `;
 
-const PostItemBlock = styled.dvi`
+const PostItemBlock = styled.div`
   padding-top: 3rem;
   padding-bottom: 3rem;
+  /* padding-left: 1rem; */
 
   &:first-child {
     margin-top: 0;
@@ -38,46 +42,12 @@ const PostItemBlock = styled.dvi`
   }
 `;
 
-const SubInfo = styled.div`
-  color: ${palette.gray[6]};
-
-  span + span:before {
-    content: '\\B7';
-    color: ${palette.gray[4]};
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
-  }
-`;
-
-const Tags = styled.div`
-  margin-top: 0.5rem;
-
-  .tag {
-    display: inline-block;
-    color: ${palette.cyan[7]};
-    text-decoration: none;
-    margin-right: 0.5rem;
-
-    &:hover {
-      color: ${palette.cyan[6]};
-    }
-  }
-`;
-
 function PostItem() {
   return (
     <PostItemBlock>
       <h2>제목</h2>
-      <SubInfo>
-        <span>
-          <b>username</b>
-        </span>
-        <span>{new Date().toLocaleDateString()}</span>
-      </SubInfo>
-      <Tags>
-        <div className="tag">#태그1</div>
-        <div className="tag">#태그2</div>
-      </Tags>
+      <SubInfo username={'username'} publishedDate={new Date()} />
+      <Tags tags={['tag1', 'tag2', 'tag3']} />
       <p>포스트 내용의 일부분..</p>
     </PostItemBlock>
   );

@@ -1,8 +1,34 @@
 import Post from '../../models/post';
 import mongoose from 'mongoose';
 import Joi from 'Joi';
+import sanitizeHtml from 'sanitize-html';
 
 const { ObjectId } = mongoose.Types;
+
+// 허용해줄 HTML Tags
+const sanitizeOption = {
+  allowedTags: [
+    'h1',
+    'h2',
+    'b',
+    'i',
+    'u',
+    's',
+    'p',
+    'ul',
+    'ol',
+    'li',
+    'blockquote',
+    'a',
+    'img',
+  ], // 허용 태그
+  allowedAttributes: {
+    a: ['href', 'name', 'target'],
+    img: ['src'],
+    li: ['class'],
+  }, // 허용 애트리뷰트들
+  allowedSchemed: ['data', 'http'],
+};
 
 export const getPostById = async (ctx, next) => {
   const { id } = ctx.params;
@@ -33,6 +59,13 @@ export const checkOwnPost = (ctx, next) => {
   return next();
 };
 
+const removeHtmlAndShorten = (body) => {
+  const filtered = sanitizeHtml(body, {
+    allowedTags: [], // 허용할 html tag들 지정
+  });
+  return filtered.length < 200 ? filtered : `${filtered.slice(0, 200)}...`;
+};
+
 // POST { title, body, tags }
 export const write = async (ctx) => {
   console.log('backend ctx ', ctx.request.body);
@@ -53,7 +86,7 @@ export const write = async (ctx) => {
   const { title, body, tags } = ctx.request.body;
   const post = new Post({
     title,
-    body,
+    body: sanitizeHtml(body, sanitizeOption),
     tags,
     user: ctx.state.user,
   });
@@ -106,8 +139,7 @@ export const list = async (ctx) => {
       .map((post) => post.toJSON()) // mongoDB에서 바로 받아오면 mongo Type이라서 toJSON으로 타입 변형 해줘야만 함
       .map((post) => ({
         ...post,
-        body:
-          post.body.length < 200 ? post.body : `${post.body.slice(0, 200)}...`,
+        body: removeHtmlAndShorten(post.body),
       }));
   } catch (e) {
     ctx.throw(500, e);
@@ -160,7 +192,8 @@ export const update = async (ctx) => {
     tags: Joi.array().items(Joi.string()),
   });
 
-  const result = schema.validate(ctx.request.body);
+  const { body } = ctx.request;
+  const result = schema.validate(body);
 
   if (result.error) {
     ctx.status = 400;
@@ -168,8 +201,13 @@ export const update = async (ctx) => {
     return;
   }
 
+  const nextData = { ...body };
+  if (nextData.body) {
+    nextData.body = sanitizeHtml(nextData.body, sanitizeOption);
+  }
+
   try {
-    const post = await Post.findByIdAndUpdate(id, ctx.request.body, {
+    const post = await Post.findByIdAndUpdate(id, nextData, {
       new: true, // 업데이트된 데이터를 반환한다. false === 업데이트 전 데이터를 반환
     }).exec();
 
